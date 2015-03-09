@@ -1,0 +1,30 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+
+SET (LIB_NAMES m jpeg png)
+
+FOREACH(lib ${LIB_NAMES})
+  FIND_LIBRARY(LIB_${lib} ${lib})
+  IF (LIB_${lib})
+    MESSAGE(STATUS "found library '${lib}': ${LIB_${lib}}")
+  ELSE (LIB_${lib})
+    MESSAGE(FATAL_ERROR "cannot find library '${lib}' - this will not work ...")
+  ENDIF (LIB_${lib})
+  LIST(APPEND LIBS ${LIB_${lib}})
+ENDFOREACH(lib)
+
+
+
+SET (CLASSES image io opticalflow_aux opticalflow solver flowIO)
+
+FOREACH(class ${CLASSES})
+  LIST(APPEND SOURCES ${class}.c ${class}.h)
+   MESSAGE(STATUS "found library '${SOURCES}'")
+ENDFOREACH(class)
+
+LINK_DIRECTORIES(${LINK_DIRS})
+LINK_LIBRARIES (deepflow_1 ${LIBS})
+ADD_EXECUTABLE(deepflow deepflow.c )
+ADD_LIBRARY(deepflow_1 SHARED ${SOURCES})
+
+
+LINK_LIBRARIES (deepflow ${LIBS} deepflow_1)
